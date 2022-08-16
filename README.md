@@ -1,2 +1,5 @@
-# trading_indicators
+# TRADING INDICATORS MODULE
+
+* test
+
 Trading indicators
