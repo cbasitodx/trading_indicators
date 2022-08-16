@@ -1,4 +1,3 @@
-from ast import mod
 import pandas as pd
 import datetime as dt
 import binance as bnc
