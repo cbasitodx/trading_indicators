@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime as dt
 import binance as bnc
+import numpy as np
 
 '''
 UTILITIES NAMESPACE:
@@ -442,10 +443,30 @@ def calculate_squeeze(df : pd.DataFrame, modify=False):
     pydoc here
     '''
     #First, we calculate the Bollinger bands and the Keltner channel
-    bollinger_bands = calculate_bollinger_bands(df, period=20.0, multiplier=2.0, modify=False)
-    keltner_channel = calculate_keltner_channel(df, period=20.0, multiplier=1.5, modify=False)
+    bollinger_bands = calculate_bollinger_bands(df, period=20, multiplier=2.0, modify=False)
+    keltner_channel = calculate_keltner_channel(df, period=20, multiplier=1.5, modify=False)
 
-    #sqzOn  = (lowerBB > lowerKC) and (upperBB < upperKC)
-    #sqzOff = (lowerBB < lowerKC) and (upperBB > upperKC)
-    #noSqz  = (sqzOn == false) and (sqzOff == false)
+    lowerBB = bollinger_bands['Lower BB']
+    upperBB = bollinger_bands['Upper BB']
+    lowerKC = keltner_channel['Lower KC']
+    upperKC = keltner_channel['Upper KC']
+
+    sqzOn  = (lowerBB > lowerKC) & (upperBB < upperKC)
+    sqzOff = (lowerBB < lowerKC) | (upperBB > upperKC)
+    #noSqz  = (sqzOn == False) & (sqzOff == False)
+
+    sqzOn=sqzOn.replace(False, np.nan)
+    sqzOff=sqzOff.replace(False, np.nan)
+    #noSqz=noSqz.replace(False, np.nan)
+
+    if modify:
+        df['Squeeze On'] = sqzOn
+        df['Squeeze Off'] = sqzOff
+        #df['No Squeeze'] = noSqz
+    else:
+        result = pd.DateFrame()
+        result['Squeeze On'] = sqzOn
+        result['Squeeze Off'] = sqzOff
+        #result['No Squeeze'] = noSqz
+        return result
 
