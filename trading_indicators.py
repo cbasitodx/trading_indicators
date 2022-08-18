@@ -452,21 +452,21 @@ def calculate_squeeze(df : pd.DataFrame, modify=False):
     upperKC = keltner_channel['Upper KC']
 
     sqzOn  = (lowerBB > lowerKC) & (upperBB < upperKC)
-    sqzOff = (lowerBB < lowerKC) | (upperBB > upperKC)
-    #noSqz  = (sqzOn == False) & (sqzOff == False)
+    sqzOff = (lowerBB < lowerKC) & (upperBB > upperKC)
+    noSqz  = (sqzOn == False) & (sqzOff == False)
 
-    sqzOn=sqzOn.replace(False, np.nan)
-    sqzOff=sqzOff.replace(False, np.nan)
-    #noSqz=noSqz.replace(False, np.nan)
+    sqzOn = sqzOn.replace(False, np.nan)
+    sqzOff = sqzOff.replace(False, np.nan)
+    noSqz = noSqz.replace(False, np.nan)
 
     if modify:
         df['Squeeze On'] = sqzOn
         df['Squeeze Off'] = sqzOff
-        #df['No Squeeze'] = noSqz
+        df['No Squeeze'] = noSqz
     else:
         result = pd.DateFrame()
         result['Squeeze On'] = sqzOn
         result['Squeeze Off'] = sqzOff
-        #result['No Squeeze'] = noSqz
+        result['No Squeeze'] = noSqz
         return result
 
